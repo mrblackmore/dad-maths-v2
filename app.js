@@ -7,12 +7,14 @@ const screens = {
   home: document.getElementById("homeScreen"),
   lesson: document.getElementById("lessonScreen"),
   question: document.getElementById("questionScreen"),
+  timesTables: document.getElementById("timesTablesScreen"),
   celebration: document.getElementById("celebrationScreen"),
   certificate: document.getElementById("certificateScreen")
 };
 
 const topicGrid = document.getElementById("topicGrid");
 const startLearningButton = document.getElementById("startLearningButton");
+const timesTablesModeButton = document.getElementById("timesTablesModeButton");
 const startBronzeButton = document.getElementById("startBronzeButton");
 const checkAnswerButton = document.getElementById("checkAnswerButton");
 const finishTopicButton = document.getElementById("finishTopicButton");
@@ -21,6 +23,11 @@ const downloadCertificateButton = document.getElementById("downloadCertificateBu
 const printCertificateButton = document.getElementById("printCertificateButton");
 const answerInput = document.getElementById("answerInput");
 const feedbackBox = document.getElementById("feedbackBox");
+const timesAnswerInput = document.getElementById("timesAnswerInput");
+const timesFeedbackBox = document.getElementById("timesFeedbackBox");
+const timesQuestion = document.getElementById("timesQuestion");
+const timesStatsLabel = document.getElementById("timesStatsLabel");
+const timesHeatmap = document.getElementById("timesHeatmap");
 
 const appState = {
   selectedTopic: dadMathsTopics[0],
@@ -30,7 +37,10 @@ const appState = {
   completedLevels: [],
   isMovingToNextQuestion: false,
   completedTopic: null,
-  learnerName: "Lauren"
+  learnerName: "Lauren",
+  timesTablesStats: loadTimesTablesStats(),
+  currentTimesQuestion: null,
+  practiceWeakTables: false
 };
 
 const levelOrder = ["bronze", "silver", "gold"];
@@ -190,6 +200,197 @@ function completeCurrentLevel() {
   document.getElementById("celebrationMessage").textContent =
     "Brilliant work, Lauren. You finished Bronze, Silver and Gold with real persistence.";
   showScreen("celebration");
+}
+
+function startTimesTablesMode() {
+  document.documentElement.style.setProperty("--accent", "#6c2eb9");
+  appState.practiceWeakTables = false;
+  renderTimesTablesHeatmap();
+  setNextTimesQuestion();
+  showScreen("timesTables");
+}
+
+function createEmptyTimesTablesStats() {
+  const stats = {};
+
+  for (let table = 1; table <= 12; table += 1) {
+    for (let multiplier = 1; multiplier <= 12; multiplier += 1) {
+      stats[getTimesFactKey(table, multiplier)] = {
+        attempts: 0,
+        correct: 0
+      };
+    }
+  }
+
+  return stats;
+}
+
+function loadTimesTablesStats() {
+  const savedStats = localStorage.getItem("dadMathsTimesTablesStats");
+
+  if (!savedStats) {
+    return createEmptyTimesTablesStats();
+  }
+
+  try {
+    return {
+      ...createEmptyTimesTablesStats(),
+      ...JSON.parse(savedStats)
+    };
+  } catch (error) {
+    return createEmptyTimesTablesStats();
+  }
+}
+
+function saveTimesTablesStats() {
+  localStorage.setItem("dadMathsTimesTablesStats", JSON.stringify(appState.timesTablesStats));
+}
+
+function getTimesFactKey(table, multiplier) {
+  return `${table}x${multiplier}`;
+}
+
+function getFactAccuracy(table, multiplier) {
+  const factStats = appState.timesTablesStats[getTimesFactKey(table, multiplier)];
+
+  if (!factStats || factStats.attempts === 0) {
+    return null;
+  }
+
+  return factStats.correct / factStats.attempts;
+}
+
+function getHeatmapClass(table, multiplier) {
+  const accuracy = getFactAccuracy(table, multiplier);
+
+  if (accuracy === null) {
+    return "untried";
+  }
+
+  if (accuracy >= 0.8) {
+    return "strong";
+  }
+
+  if (accuracy >= 0.5) {
+    return "developing";
+  }
+
+  return "needs-work";
+}
+
+function renderTimesTablesHeatmap() {
+  let totalAttempts = 0;
+  timesHeatmap.innerHTML = '<div class="heatmap-label">×</div>';
+
+  for (let multiplier = 1; multiplier <= 12; multiplier += 1) {
+    timesHeatmap.innerHTML += `<div class="heatmap-label">${multiplier}</div>`;
+  }
+
+  for (let table = 1; table <= 12; table += 1) {
+    timesHeatmap.innerHTML += `<div class="heatmap-label">${table}×</div>`;
+
+    for (let multiplier = 1; multiplier <= 12; multiplier += 1) {
+      const factStats = appState.timesTablesStats[getTimesFactKey(table, multiplier)];
+      const heatClass = getHeatmapClass(table, multiplier);
+      totalAttempts += factStats.attempts;
+
+      timesHeatmap.innerHTML += `
+        <div class="heatmap-cell ${heatClass}" title="${table} × ${multiplier}: ${factStats.correct}/${factStats.attempts}">
+          ${factStats.correct}/${factStats.attempts}
+        </div>
+      `;
+    }
+  }
+
+  timesStatsLabel.textContent = `${totalAttempts} attempts saved`;
+}
+
+function setNextTimesQuestion() {
+  appState.currentTimesQuestion = appState.practiceWeakTables
+    ? chooseWeakTimesQuestion()
+    : chooseRandomTimesQuestion();
+
+  timesQuestion.textContent = `${appState.currentTimesQuestion.table} × ${appState.currentTimesQuestion.multiplier} = ?`;
+  timesAnswerInput.value = "";
+  timesFeedbackBox.textContent = "";
+  timesFeedbackBox.className = "feedback-box";
+  timesAnswerInput.focus();
+}
+
+function chooseRandomTimesQuestion() {
+  return {
+    table: randomNumber(1, 12),
+    multiplier: randomNumber(1, 12)
+  };
+}
+
+function chooseWeakTimesQuestion() {
+  const facts = [];
+
+  for (let table = 1; table <= 12; table += 1) {
+    for (let multiplier = 1; multiplier <= 12; multiplier += 1) {
+      const factStats = appState.timesTablesStats[getTimesFactKey(table, multiplier)];
+      const accuracy = factStats.attempts === 0 ? 0 : factStats.correct / factStats.attempts;
+
+      facts.push({
+        table,
+        multiplier,
+        accuracy,
+        attempts: factStats.attempts
+      });
+    }
+  }
+
+  facts.sort((firstFact, secondFact) => {
+    if (firstFact.accuracy !== secondFact.accuracy) {
+      return firstFact.accuracy - secondFact.accuracy;
+    }
+
+    return firstFact.attempts - secondFact.attempts;
+  });
+
+  const weakestFacts = facts.slice(0, 12);
+  return weakestFacts[randomNumber(0, weakestFacts.length - 1)];
+}
+
+function checkTimesAnswer() {
+  const question = appState.currentTimesQuestion;
+  const correctAnswer = question.table * question.multiplier;
+  const userAnswer = Number(normaliseAnswer(timesAnswerInput.value));
+  const factKey = getTimesFactKey(question.table, question.multiplier);
+  const factStats = appState.timesTablesStats[factKey];
+
+  if (timesAnswerInput.value.trim() === "") {
+    timesFeedbackBox.textContent = "Pop an answer in when you are ready.";
+    timesFeedbackBox.className = "feedback-box try-again";
+    return;
+  }
+
+  factStats.attempts += 1;
+
+  if (userAnswer === correctAnswer) {
+    factStats.correct += 1;
+    timesFeedbackBox.textContent = `Nice one Lauren! ${question.table} × ${question.multiplier} = ${correctAnswer}.`;
+    timesFeedbackBox.className = "feedback-box correct";
+  } else {
+    timesFeedbackBox.textContent = `Good try. The correct answer is ${correctAnswer}. Have another calm go.`;
+    timesFeedbackBox.className = "feedback-box try-again";
+  }
+
+  saveTimesTablesStats();
+  renderTimesTablesHeatmap();
+  setTimeout(setNextTimesQuestion, 1200);
+}
+
+function startWeakTablesPractice() {
+  appState.practiceWeakTables = true;
+  timesFeedbackBox.textContent = "Weak tables mode is on. I will pick the facts that need the most practice.";
+  timesFeedbackBox.className = "feedback-box try-again";
+  setTimeout(setNextTimesQuestion, 800);
+}
+
+function randomNumber(minimum, maximum) {
+  return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 }
 
 function updateTopicProgress() {
@@ -389,12 +590,15 @@ startLearningButton.addEventListener("click", () => {
   showScreen("lesson");
 });
 
+timesTablesModeButton.addEventListener("click", startTimesTablesMode);
 startBronzeButton.addEventListener("click", () => startLevel("bronze"));
 checkAnswerButton.addEventListener("click", checkAnswer);
 finishTopicButton.addEventListener("click", () => showScreen("home"));
 viewCertificateButton.addEventListener("click", showCertificate);
 downloadCertificateButton.addEventListener("click", downloadCertificate);
 printCertificateButton.addEventListener("click", () => window.print());
+document.getElementById("checkTimesAnswerButton").addEventListener("click", checkTimesAnswer);
+document.getElementById("weakTablesButton").addEventListener("click", startWeakTablesPractice);
 
 answerInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
@@ -402,12 +606,20 @@ answerInput.addEventListener("keydown", (event) => {
   }
 });
 
+timesAnswerInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    checkTimesAnswer();
+  }
+});
+
 document.getElementById("backToHomeFromLesson").addEventListener("click", () => showScreen("home"));
 document.getElementById("backToHomeFromQuestions").addEventListener("click", () => showScreen("home"));
+document.getElementById("backToHomeFromTimes").addEventListener("click", () => showScreen("home"));
 document.getElementById("backToCelebrationButton").addEventListener("click", () => showScreen("celebration"));
 document.getElementById("certificateTopicsButton").addEventListener("click", () => showScreen("home"));
 
 renderTopics();
+renderTimesTablesHeatmap();
 
 // Handy preview route while designing the certificate.
 // On GitHub Pages, open index.html#certificate to see the certificate without completing a quiz.
