@@ -8,6 +8,8 @@ const screens = {
   lesson: document.getElementById("lessonScreen"),
   question: document.getElementById("questionScreen"),
   timesTables: document.getElementById("timesTablesScreen"),
+  skillResults: document.getElementById("skillResultsScreen"),
+  progress: document.getElementById("progressScreen"),
   celebration: document.getElementById("celebrationScreen"),
   certificate: document.getElementById("certificateScreen")
 };
@@ -15,6 +17,8 @@ const screens = {
 const topicGrid = document.getElementById("topicGrid");
 const startLearningButton = document.getElementById("startLearningButton");
 const timesTablesModeButton = document.getElementById("timesTablesModeButton");
+const skillCheckButton = document.getElementById("skillCheckButton");
+const myProgressButton = document.getElementById("myProgressButton");
 const startBronzeButton = document.getElementById("startBronzeButton");
 const checkAnswerButton = document.getElementById("checkAnswerButton");
 const finishTopicButton = document.getElementById("finishTopicButton");
@@ -40,7 +44,11 @@ const appState = {
   learnerName: "Lauren",
   timesTablesStats: loadTimesTablesStats(),
   currentTimesQuestion: null,
-  practiceWeakTables: false
+  practiceWeakTables: false,
+  timesQuestionStartedAt: 0,
+  recentTimesQuestions: [],
+  skillCheck: null,
+  skillCheckSessions: loadSkillCheckSessions()
 };
 
 const levelOrder = ["bronze", "silver", "gold"];
@@ -205,6 +213,7 @@ function completeCurrentLevel() {
 function startTimesTablesMode() {
   document.documentElement.style.setProperty("--accent", "#6c2eb9");
   appState.practiceWeakTables = false;
+  appState.skillCheck = null;
   renderTimesTablesHeatmap();
   setNextTimesQuestion();
   showScreen("timesTables");
@@ -217,7 +226,8 @@ function createEmptyTimesTablesStats() {
     for (let multiplier = 1; multiplier <= 12; multiplier += 1) {
       stats[getTimesFactKey(table, multiplier)] = {
         attempts: 0,
-        correct: 0
+        correct: 0,
+        totalTime: 0
       };
     }
   }
@@ -226,7 +236,7 @@ function createEmptyTimesTablesStats() {
 }
 
 function loadTimesTablesStats() {
-  const savedStats = localStorage.getItem("dadMathsTimesTablesStats");
+  const savedStats = safeStorageGet("dadMathsTimesTablesStats");
 
   if (!savedStats) {
     return createEmptyTimesTablesStats();
@@ -243,7 +253,23 @@ function loadTimesTablesStats() {
 }
 
 function saveTimesTablesStats() {
-  localStorage.setItem("dadMathsTimesTablesStats", JSON.stringify(appState.timesTablesStats));
+  safeStorageSet("dadMathsTimesTablesStats", JSON.stringify(appState.timesTablesStats));
+}
+
+function safeStorageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (error) {
+    return null;
+  }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    // Some local file previews block storage. The app still works for the current session.
+  }
 }
 
 function getTimesFactKey(table, multiplier) {
@@ -258,6 +284,57 @@ function getFactAccuracy(table, multiplier) {
   }
 
   return factStats.correct / factStats.attempts;
+}
+
+function getTableSummary(table) {
+  const summary = {
+    table,
+    attempts: 0,
+    correct: 0,
+    totalTime: 0,
+    accuracy: null,
+    averageTime: null
+  };
+
+  for (let multiplier = 1; multiplier <= 12; multiplier += 1) {
+    const factStats = appState.timesTablesStats[getTimesFactKey(table, multiplier)];
+    summary.attempts += factStats.attempts;
+    summary.correct += factStats.correct;
+    summary.totalTime += factStats.totalTime || 0;
+  }
+
+  if (summary.attempts > 0) {
+    summary.accuracy = summary.correct / summary.attempts;
+    summary.averageTime = summary.totalTime / summary.attempts;
+  }
+
+  return summary;
+}
+
+function getAllTableSummaries() {
+  const summaries = [];
+
+  for (let table = 1; table <= 12; table += 1) {
+    summaries.push(getTableSummary(table));
+  }
+
+  return summaries;
+}
+
+function getFocusTables(limit = 4) {
+  return getAllTableSummaries()
+    .sort((firstTable, secondTable) => {
+      const firstAccuracy = firstTable.accuracy === null ? 0 : firstTable.accuracy;
+      const secondAccuracy = secondTable.accuracy === null ? 0 : secondTable.accuracy;
+
+      if (firstAccuracy !== secondAccuracy) {
+        return firstAccuracy - secondAccuracy;
+      }
+
+      return firstTable.attempts - secondTable.attempts;
+    })
+    .slice(0, limit)
+    .map((summary) => summary.table);
 }
 
 function getHeatmapClass(table, multiplier) {
@@ -311,6 +388,7 @@ function setNextTimesQuestion() {
     : chooseRandomTimesQuestion();
 
   timesQuestion.textContent = `${appState.currentTimesQuestion.table} × ${appState.currentTimesQuestion.multiplier} = ?`;
+  appState.timesQuestionStartedAt = Date.now();
   timesAnswerInput.value = "";
   timesFeedbackBox.textContent = "";
   timesFeedbackBox.className = "feedback-box";
@@ -318,13 +396,39 @@ function setNextTimesQuestion() {
 }
 
 function chooseRandomTimesQuestion() {
-  return {
-    table: randomNumber(1, 12),
+  return chooseQuestionWithVariety();
+}
+
+function chooseWeakTimesQuestion() {
+  const focusTables = getFocusTables(4);
+  return chooseQuestionWithVariety(focusTables);
+}
+
+function chooseQuestionWithVariety(tableChoices) {
+  let question = null;
+
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const table = tableChoices
+      ? tableChoices[randomNumber(0, tableChoices.length - 1)]
+      : randomNumber(1, 12);
+    const multiplier = randomNumber(1, 12);
+    const factKey = getTimesFactKey(table, multiplier);
+
+    if (!appState.recentTimesQuestions.includes(factKey)) {
+      question = { table, multiplier };
+      appState.recentTimesQuestions.push(factKey);
+      appState.recentTimesQuestions = appState.recentTimesQuestions.slice(-8);
+      break;
+    }
+  }
+
+  return question || {
+    table: tableChoices ? tableChoices[randomNumber(0, tableChoices.length - 1)] : randomNumber(1, 12),
     multiplier: randomNumber(1, 12)
   };
 }
 
-function chooseWeakTimesQuestion() {
+function chooseWeakFactQuestion() {
   const facts = [];
 
   for (let table = 1; table <= 12; table += 1) {
@@ -359,6 +463,7 @@ function checkTimesAnswer() {
   const userAnswer = Number(normaliseAnswer(timesAnswerInput.value));
   const factKey = getTimesFactKey(question.table, question.multiplier);
   const factStats = appState.timesTablesStats[factKey];
+  const timeTaken = Math.max(0.2, (Date.now() - appState.timesQuestionStartedAt) / 1000);
 
   if (timesAnswerInput.value.trim() === "") {
     timesFeedbackBox.textContent = "Pop an answer in when you are ready.";
@@ -367,6 +472,7 @@ function checkTimesAnswer() {
   }
 
   factStats.attempts += 1;
+  factStats.totalTime = (factStats.totalTime || 0) + timeTaken;
 
   if (userAnswer === correctAnswer) {
     factStats.correct += 1;
@@ -379,6 +485,13 @@ function checkTimesAnswer() {
 
   saveTimesTablesStats();
   renderTimesTablesHeatmap();
+
+  if (appState.skillCheck) {
+    recordSkillCheckAnswer(question, userAnswer === correctAnswer, timeTaken);
+    setTimeout(moveToNextSkillCheckQuestion, 1000);
+    return;
+  }
+
   setTimeout(setNextTimesQuestion, 1200);
 }
 
@@ -442,16 +555,30 @@ function downloadCertificate() {
   canvas.width = width;
   canvas.height = height;
 
-  logo.onload = () => {
-    drawCertificateCanvas(context, logo, topic, width, height);
+  logo.crossOrigin = "anonymous";
 
+  logo.onload = () => {
+    drawAndSaveCertificate(context, canvas, logo, topic, width, height);
+  };
+
+  logo.onerror = () => {
+    drawAndSaveCertificate(context, canvas, null, topic, width, height);
+  };
+
+  logo.src = "assets/dad-maths-logo.png";
+}
+
+function drawAndSaveCertificate(context, canvas, logo, topic, width, height) {
+  drawCertificateCanvas(context, logo, topic, width, height);
+
+  try {
     const link = document.createElement("a");
     link.download = `dad-maths-${topic.id}-gold-certificate.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
-  };
-
-  logo.src = "assets/dad-maths-logo.png";
+  } catch (error) {
+    alert("The browser blocked the certificate image download in this local preview. Try the Print Certificate button, or use Download Certificate after the site is on GitHub Pages.");
+  }
 }
 
 function drawCertificateCanvas(context, logo, topic, width, height) {
@@ -462,7 +589,11 @@ function drawCertificateCanvas(context, logo, topic, width, height) {
 
   roundedRect(context, 24, 24, width - 48, height - 48, 34, "#ffffff", "#8f54d2", 4);
   drawSoftMathMarks(context, width, height);
-  context.drawImage(logo, 70, 50, 320, 320);
+  if (logo) {
+    context.drawImage(logo, 70, 50, 320, 320);
+  } else {
+    drawCanvasLogoFallback(context);
+  }
 
   roundedRect(context, 500, 55, 640, 120, 22, "#6c2eb9", "#441083", 4);
   drawCenteredText(context, "CERTIFICATE", 820, 138, "700 70px Comic Sans MS, Arial", "#ffffff");
@@ -486,6 +617,14 @@ function drawCertificateCanvas(context, logo, topic, width, height) {
 
   roundedRect(context, 255, 1040, 1090, 70, 34, "#441083", "#441083", 0);
   drawCenteredText(context, "★ Work hard, stay positive and always LEVEL UP! ★", 800, 1087, "700 34px Comic Sans MS, Arial", "#ffffff");
+}
+
+function drawCanvasLogoFallback(context) {
+  context.save();
+  roundedRect(context, 70, 70, 320, 240, 30, "#062b63", "#f1c40f", 8);
+  drawCenteredText(context, "DAD", 230, 160, "700 78px Comic Sans MS, Arial", "#f1c40f", "#003a75");
+  drawCenteredText(context, "MATHS", 230, 240, "700 58px Comic Sans MS, Arial", "#ffffff", "#003a75");
+  context.restore();
 }
 
 function roundedRect(context, x, y, width, height, radius, fill, stroke, lineWidth) {
