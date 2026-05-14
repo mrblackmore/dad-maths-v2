@@ -20,6 +20,8 @@
             <p class="hero-text">Small steps, calm practice, big confidence.</p>
             <button class="primary-button" id="startLearningButton">Start Learning</button>
             <button class="primary-button secondary-button" id="timesTablesModeButton">Times Tables Practice</button>
+            <button class="primary-button secondary-button" id="skillCheckButton">Start Skill Check</button>
+            <button class="text-button hero-progress-button" id="myProgressButton">My Progress</button>
           </div>
           <aside class="level-up-panel" aria-label="Bronze Silver Gold levels">
             <h2>Level Up!</h2>
@@ -71,7 +73,7 @@
             <input id="timesAnswerInput" class="answer-input" type="text" inputmode="numeric" autocomplete="off" />
             <div class="times-actions">
               <button class="primary-button" id="checkTimesAnswerButton">Check</button>
-              <button class="primary-button secondary-button" id="weakTablesButton">Practice My Weak Tables</button>
+              <button class="primary-button secondary-button" id="weakTablesButton">Practice My Focus Areas</button>
             </div>
             <div class="feedback-box" id="timesFeedbackBox"></div>
           </div>
@@ -89,6 +91,88 @@
             <div class="heatmap-wrap">
               <div class="heatmap-grid" id="timesHeatmap"></div>
             </div>
+          </section>
+        </article>
+      </section>
+
+      <section class="screen skill-results-screen hidden" id="skillResultsScreen" aria-live="polite">
+        <button class="text-button" id="backToHomeFromResults">Back to topics</button>
+        <article class="times-card">
+          <div class="lesson-heading">
+            <div class="lesson-icon">★</div>
+            <div>
+              <p class="eyebrow">Skill Check complete</p>
+              <h1>Lauren's Results</h1>
+            </div>
+          </div>
+          <div class="results-grid">
+            <div class="result-tile">
+              <span>Accuracy</span>
+              <strong id="resultAccuracy">0%</strong>
+            </div>
+            <div class="result-tile">
+              <span>Average Time</span>
+              <strong id="resultAverageTime">0s</strong>
+            </div>
+            <div class="result-tile">
+              <span>Score</span>
+              <strong id="resultScore">0/0</strong>
+            </div>
+          </div>
+
+          <div class="focus-grid">
+            <section>
+              <h2>Strongest Tables</h2>
+              <div class="focus-list" id="strongestTablesList"></div>
+            </section>
+            <section>
+              <h2>Focus Areas</h2>
+              <div class="focus-list" id="weakestTablesList"></div>
+            </section>
+          </div>
+
+          <p class="times-intro" id="resultEncouragement">
+            Great effort. The next practice will focus on the facts that need another calm go.
+          </p>
+          <button class="primary-button" id="practiceFocusFromResultsButton">Practise My Focus Areas</button>
+          <button class="primary-button secondary-button" id="viewProgressFromResultsButton">View My Progress</button>
+        </article>
+      </section>
+
+      <section class="screen progress-screen hidden" id="progressScreen" aria-live="polite">
+        <button class="text-button" id="backToHomeFromProgress">Back to topics</button>
+        <article class="times-card">
+          <div class="lesson-heading">
+            <div class="lesson-icon">↗</div>
+            <div>
+              <p class="eyebrow">Dad Maths progress</p>
+              <h1>My Progress</h1>
+            </div>
+          </div>
+
+          <div class="results-grid">
+            <div class="result-tile">
+              <span>Overall Accuracy</span>
+              <strong id="overallAccuracy">0%</strong>
+            </div>
+            <div class="result-tile">
+              <span>Average Time</span>
+              <strong id="overallAverageTime">0s</strong>
+            </div>
+            <div class="result-tile">
+              <span>Total Attempts</span>
+              <strong id="overallAttempts">0</strong>
+            </div>
+          </div>
+
+          <section class="chart-card">
+            <h2>Progress Over Skill Checks</h2>
+            <div class="line-chart" id="progressLineChart"></div>
+          </section>
+
+          <section class="chart-card">
+            <h2>Accuracy By Table</h2>
+            <div class="bar-chart" id="tableAccuracyChart"></div>
           </section>
         </article>
       </section>
