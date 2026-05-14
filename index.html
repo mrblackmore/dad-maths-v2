@@ -19,6 +19,7 @@
             <div class="ribbon">Learn it • Understand it • Nail it!</div>
             <p class="hero-text">Small steps, calm practice, big confidence.</p>
             <button class="primary-button" id="startLearningButton">Start Learning</button>
+            <button class="primary-button secondary-button" id="timesTablesModeButton">Times Tables Practice</button>
           </div>
           <aside class="level-up-panel" aria-label="Bronze Silver Gold levels">
             <h2>Level Up!</h2>
@@ -43,6 +44,53 @@
           </div>
           <div class="topic-grid" id="topicGrid"></div>
         </section>
+      </section>
+
+      <section class="screen times-screen hidden" id="timesTablesScreen" aria-live="polite">
+        <button class="text-button" id="backToHomeFromTimes">Back to topics</button>
+        <article class="times-card">
+          <div class="lesson-heading">
+            <div class="lesson-icon">×</div>
+            <div>
+              <p class="eyebrow">Fluency practice</p>
+              <h1>Times Tables Practice</h1>
+            </div>
+          </div>
+          <div class="ribbon lesson-ribbon">Bronze • Silver • Gold Facts</div>
+          <p class="times-intro">
+            Practise 1 to 12 multiplication facts. The heatmap shows what feels strong and what needs another calm go.
+          </p>
+
+          <div class="times-practice-panel">
+            <div class="question-topline">
+              <span class="level-badge gold">Practice Mode</span>
+              <span class="progress-label" id="timesStatsLabel">0 attempts saved</span>
+            </div>
+            <h2 class="times-question" id="timesQuestion">3 × 4 = ?</h2>
+            <label class="answer-label" for="timesAnswerInput">Your answer</label>
+            <input id="timesAnswerInput" class="answer-input" type="text" inputmode="numeric" autocomplete="off" />
+            <div class="times-actions">
+              <button class="primary-button" id="checkTimesAnswerButton">Check</button>
+              <button class="primary-button secondary-button" id="weakTablesButton">Practice My Weak Tables</button>
+            </div>
+            <div class="feedback-box" id="timesFeedbackBox"></div>
+          </div>
+
+          <section class="heatmap-section" aria-labelledby="heatmapTitle">
+            <div class="section-heading">
+              <h2 id="heatmapTitle">Times Tables Heatmap</h2>
+              <p>Green = strong, amber = developing, red = needs work.</p>
+            </div>
+            <div class="heatmap-legend">
+              <span><i class="heat-strong"></i> Strong</span>
+              <span><i class="heat-developing"></i> Developing</span>
+              <span><i class="heat-needs-work"></i> Needs work</span>
+            </div>
+            <div class="heatmap-wrap">
+              <div class="heatmap-grid" id="timesHeatmap"></div>
+            </div>
+          </section>
+        </article>
       </section>
 
       <section class="screen lesson-screen hidden" id="lessonScreen" aria-live="polite">
