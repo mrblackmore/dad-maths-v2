@@ -61,7 +61,8 @@ button {
 .lesson-card,
 .question-card,
 .celebration-card,
-.certificate-card {
+.certificate-card,
+.times-card {
   background: var(--card);
   border: 4px solid var(--accent);
   border-radius: 22px;
@@ -343,7 +344,8 @@ h2 {
 
 .lesson-card,
 .question-card,
-.celebration-card {
+.celebration-card,
+.times-card {
   padding: 22px;
 }
 
@@ -532,6 +534,129 @@ h2 {
 .feedback-box.try-again {
   background: rgba(241, 196, 15, 0.18);
   color: #8a6d00;
+}
+
+.times-card {
+  border-color: var(--purple);
+}
+
+.times-intro {
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.5;
+}
+
+.times-practice-panel {
+  margin: 18px 0;
+  padding: 16px;
+  border: 3px solid rgba(108, 46, 185, 0.16);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 255, 0.96)),
+    linear-gradient(135deg, rgba(108, 46, 185, 0.12), rgba(241, 196, 15, 0.14));
+}
+
+.times-question {
+  margin: 18px 0;
+  padding: 18px;
+  border: 3px solid rgba(108, 46, 185, 0.18);
+  border-radius: 20px;
+  background: white;
+  color: var(--purple);
+  font-size: clamp(2.8rem, 16vw, 5.5rem);
+  text-align: center;
+}
+
+.times-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.heatmap-section {
+  margin-top: 24px;
+}
+
+.heatmap-legend {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.heatmap-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heatmap-legend i {
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
+  border: 2px solid rgba(6, 43, 99, 0.12);
+}
+
+.heat-strong {
+  background: #2ecc71;
+}
+
+.heat-developing {
+  background: #f1c40f;
+}
+
+.heat-needs-work {
+  background: #e74c3c;
+}
+
+.heatmap-wrap {
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: 54px repeat(12, minmax(42px, 1fr));
+  gap: 5px;
+  min-width: 620px;
+}
+
+.heatmap-cell,
+.heatmap-label {
+  min-height: 42px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(6, 43, 99, 0.08);
+  font-weight: 700;
+}
+
+.heatmap-label {
+  background: #ffffff;
+  color: var(--purple);
+}
+
+.heatmap-cell {
+  color: #111827;
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+.heatmap-cell.strong {
+  background: rgba(46, 204, 113, 0.78);
+}
+
+.heatmap-cell.developing {
+  background: rgba(241, 196, 15, 0.82);
+}
+
+.heatmap-cell.needs-work {
+  background: rgba(231, 76, 60, 0.78);
+}
+
+.heatmap-cell.untried {
+  background: #edf2f7;
+  color: #61727c;
 }
 
 .celebration-screen {
@@ -801,7 +926,8 @@ h2 {
   .lesson-card,
   .question-card,
   .celebration-card,
-  .certificate-card {
+  .certificate-card,
+  .times-card {
     padding: 34px;
   }
 
@@ -829,6 +955,11 @@ h2 {
   }
 
   .certificate-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .times-actions,
+  .heatmap-legend {
     grid-template-columns: repeat(3, 1fr);
   }
 }
