@@ -96,8 +96,55 @@
           <div class="stars" aria-hidden="true">★ ★ ★</div>
           <h1>Gold completed!</h1>
           <p id="celebrationMessage">Brilliant work, Lauren. You kept going and levelled up.</p>
+          <button class="primary-button" id="viewCertificateButton">View Certificate</button>
           <button class="primary-button" id="finishTopicButton">Back to topics</button>
         </article>
+      </section>
+
+      <section class="screen certificate-screen hidden" id="certificateScreen" aria-live="polite">
+        <button class="text-button no-print" id="backToCelebrationButton">Back to celebration</button>
+        <article class="certificate-card" id="certificateCard">
+          <div class="certificate-border">
+            <img class="certificate-logo" src="assets/dad-maths-logo.png" alt="Dad Maths logo" />
+
+            <div class="certificate-main">
+              <div class="certificate-ribbon">Certificate</div>
+              <p class="certificate-subtitle">★ Of Achievement ★</p>
+              <h1>Well done <span id="certificateName">Lauren</span>!</h1>
+              <p class="certificate-copy">You have successfully completed</p>
+              <div class="certificate-level">★ Gold Level ★</div>
+              <p class="certificate-copy">in</p>
+              <div class="certificate-topic" id="certificateTopic">Addition and Subtraction</div>
+              <p class="certificate-message">
+                Amazing work! You have shown great maths skills, focus and determination.
+                <strong>Keep it up superstar!</strong>
+              </p>
+            </div>
+
+            <div class="certificate-medal" aria-hidden="true">★</div>
+
+            <div class="certificate-signature">
+              <div>
+                <span class="signature-text">Dad</span>
+                <span class="signature-line"></span>
+                <strong>Dad Maths</strong>
+              </div>
+              <div>
+                <span id="certificateDate">24 May 2025</span>
+                <span class="signature-line"></span>
+                <strong>Date</strong>
+              </div>
+            </div>
+
+            <div class="certificate-motto">★ Work hard, stay positive and always <strong>Level Up!</strong> ★</div>
+          </div>
+        </article>
+
+        <div class="certificate-actions no-print">
+          <button class="primary-button" id="downloadCertificateButton">Download Certificate</button>
+          <button class="primary-button secondary-button" id="printCertificateButton">Print Certificate</button>
+          <button class="text-button" id="certificateTopicsButton">Back to topics</button>
+        </div>
       </section>
       <footer class="motto-bar">Work hard, stay positive and always <strong>Level Up!</strong></footer>
     </main>
