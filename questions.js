@@ -1,5 +1,5 @@
-// Dad Maths question and lesson content.
-// Keep this file focused on content so new topics can be added without editing the app logic.
+// Dad Maths content lives in one place so more topics can be added later.
+// A future Supabase version can keep this shape for saved lessons/questions.
 const dadMathsTopics = [
   {
     id: "number-place-value-rounding",
