@@ -60,7 +60,8 @@ button {
 .hero,
 .lesson-card,
 .question-card,
-.celebration-card {
+.celebration-card,
+.certificate-card {
   background: var(--card);
   border: 4px solid var(--accent);
   border-radius: 22px;
@@ -224,6 +225,10 @@ h2 {
   box-shadow: 0 8px 18px rgba(52, 152, 219, 0.28);
   font-size: 1.15rem;
   font-weight: 700;
+}
+
+.secondary-button {
+  background: linear-gradient(180deg, #8e44ad, #5a2475);
 }
 
 .primary-button:hover,
@@ -538,6 +543,205 @@ h2 {
   border-color: var(--gold);
 }
 
+.certificate-screen {
+  gap: 14px;
+}
+
+.certificate-card {
+  overflow: hidden;
+  padding: 12px;
+  border-color: var(--purple);
+  background: linear-gradient(135deg, #6c2eb9, #4b158f);
+}
+
+.certificate-border {
+  position: relative;
+  min-height: 680px;
+  overflow: hidden;
+  border: 2px solid #8f54d2;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 91% 66%, rgba(108, 46, 185, 0.08), transparent 10rem),
+    radial-gradient(circle at 11% 80%, rgba(241, 196, 15, 0.12), transparent 10rem),
+    #ffffff;
+  padding: 18px;
+  text-align: center;
+}
+
+.certificate-border::before,
+.certificate-border::after {
+  content: "+";
+  position: absolute;
+  color: rgba(108, 46, 185, 0.1);
+  font-size: 4rem;
+  font-weight: 700;
+  transform: rotate(-12deg);
+}
+
+.certificate-border::before {
+  left: 7%;
+  top: 32%;
+}
+
+.certificate-border::after {
+  right: 7%;
+  top: 16%;
+}
+
+.certificate-logo {
+  display: block;
+  width: min(180px, 46vw);
+  margin: 0 auto 12px;
+  filter: drop-shadow(0 8px 10px rgba(6, 43, 99, 0.16));
+}
+
+.certificate-main {
+  position: relative;
+  z-index: 1;
+}
+
+.certificate-ribbon {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 8px;
+  padding: 10px 28px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #8f54d2, #5b1ca2);
+  color: white;
+  box-shadow: 0 6px 0 rgba(70, 26, 91, 0.22);
+  font-size: clamp(2rem, 10vw, 4rem);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.certificate-subtitle,
+.certificate-copy {
+  margin-bottom: 12px;
+  color: #171923;
+  font-size: clamp(1rem, 4.5vw, 1.35rem);
+  font-weight: 700;
+}
+
+.certificate-subtitle {
+  color: #6c2eb9;
+  text-transform: uppercase;
+}
+
+.certificate-main h1 {
+  color: #171923;
+  font-size: clamp(2rem, 9vw, 4rem);
+}
+
+.certificate-main h1 span {
+  color: #6c2eb9;
+}
+
+.certificate-level {
+  margin: 8px auto 10px;
+  color: var(--gold);
+  font-size: clamp(2.4rem, 12vw, 5.2rem);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow:
+    0 2px 0 #aa6d00,
+    0 4px 0 rgba(170, 109, 0, 0.2);
+  text-transform: uppercase;
+}
+
+.certificate-topic {
+  width: fit-content;
+  max-width: 100%;
+  margin: 6px auto 18px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #7d32ca, #5b1ca2);
+  color: white;
+  font-size: clamp(1.25rem, 6vw, 2.4rem);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.certificate-message {
+  max-width: 620px;
+  margin: 0 auto 26px;
+  color: #171923;
+  font-size: clamp(1.05rem, 4.8vw, 1.55rem);
+  line-height: 1.4;
+}
+
+.certificate-message strong {
+  display: block;
+  margin-top: 8px;
+  color: #6c2eb9;
+}
+
+.certificate-medal {
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  margin: 8px auto 22px;
+  border: 8px solid #d58900;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe782, #f1c40f 58%, #d78b00);
+  color: white;
+  font-size: 3.4rem;
+  text-shadow: 0 3px 0 #b97700;
+  box-shadow: 0 8px 0 #5b1ca2;
+}
+
+.certificate-signature {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  max-width: 650px;
+  margin: 0 auto 26px;
+}
+
+.certificate-signature > div {
+  display: grid;
+  gap: 5px;
+  color: #6c2eb9;
+  font-size: 1.1rem;
+}
+
+.signature-text {
+  color: #111827;
+  font-family: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+  font-size: 2rem;
+}
+
+.signature-line {
+  display: block;
+  width: min(260px, 72vw);
+  height: 3px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: #6c2eb9;
+}
+
+.certificate-motto {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 14px 18px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(180deg, #6c2eb9, #441083);
+  color: white;
+  font-size: clamp(1rem, 4.8vw, 1.55rem);
+  font-weight: 700;
+}
+
+.certificate-motto strong {
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.certificate-actions {
+  display: grid;
+  gap: 10px;
+}
+
 .trophy {
   font-size: 5rem;
 }
@@ -596,7 +800,8 @@ h2 {
   .hero,
   .lesson-card,
   .question-card,
-  .celebration-card {
+  .celebration-card,
+  .certificate-card {
     padding: 34px;
   }
 
@@ -613,10 +818,57 @@ h2 {
     margin-left: auto;
     margin-right: auto;
   }
+
+  .certificate-border {
+    min-height: 720px;
+    padding: 26px;
+  }
+
+  .certificate-signature {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .certificate-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (min-width: 980px) {
   .topic-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .screen,
+  .motto-bar,
+  .no-print {
+    display: none !important;
+  }
+
+  #certificateScreen {
+    display: block !important;
+    min-height: auto;
+  }
+
+  .app-shell {
+    width: 100%;
+    padding: 0;
+  }
+
+  .certificate-card {
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .certificate-border {
+    min-height: 95vh;
+    border-radius: 0;
   }
 }
