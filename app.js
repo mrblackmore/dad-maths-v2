@@ -48,7 +48,7 @@ const appState = {
   timesQuestionStartedAt: 0,
   recentTimesQuestions: [],
   skillCheck: null,
-  skillCheckSessions: loadSkillCheckSessions()
+  skillCheckSessions: // loadSkillCheckSessions()
 };
 
 const levelOrder = ["bronze", "silver", "gold"];
