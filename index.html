@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dad Maths</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell" id="app">
+      <section class="screen home-screen" id="homeScreen">
+        <header class="hero">
+          <div class="hero-logo-panel">
+            <img class="brand-logo" src="assets/dad-maths-logo.png" alt="Dad Maths logo" />
+          </div>
+          <div class="hero-title-panel">
+            <p class="eyebrow">Lauren's level up workout</p>
+            <h1>Dad Maths</h1>
+            <div class="ribbon">Learn it • Understand it • Nail it!</div>
+            <p class="hero-text">Small steps, calm practice, big confidence.</p>
+            <button class="primary-button" id="startLearningButton">Start Learning</button>
+          </div>
+          <aside class="level-up-panel" aria-label="Bronze Silver Gold levels">
+            <h2>Level Up!</h2>
+            <p>3 levels to build your skills</p>
+            <div class="medal-row">
+              <span class="medal bronze">★</span>
+              <span class="medal silver">★</span>
+              <span class="medal gold">★</span>
+            </div>
+            <div class="medal-labels">
+              <span>Bronze</span>
+              <span>Silver</span>
+              <span>Gold</span>
+            </div>
+          </aside>
+        </header>
+
+        <section aria-labelledby="topicsTitle">
+          <div class="section-heading">
+            <h2 id="topicsTitle">Choose a topic</h2>
+            <p>Bronze, Silver and Gold questions unlock as you go.</p>
+          </div>
+          <div class="topic-grid" id="topicGrid"></div>
+        </section>
+      </section>
+
+      <section class="screen lesson-screen hidden" id="lessonScreen" aria-live="polite">
+        <button class="text-button" id="backToHomeFromLesson">Back to topics</button>
+        <article class="lesson-card">
+          <div class="lesson-heading">
+            <div class="lesson-icon" id="lessonIcon">+</div>
+            <div>
+              <p class="eyebrow" id="lessonTopic">Addition &amp; Subtraction</p>
+              <h1 id="lessonTitle">Column Addition</h1>
+            </div>
+          </div>
+          <div class="ribbon lesson-ribbon">Bronze • Silver • Gold</div>
+          <p id="lessonText"></p>
+          <figure class="lesson-image-frame">
+            <img id="lessonImage" src="assets/addition-subtraction-calculations.png" alt="" />
+          </figure>
+
+          <div class="worked-example">
+            <h2>Worked example</h2>
+            <div class="example-box" id="workedExample"></div>
+          </div>
+
+          <button class="primary-button" id="startBronzeButton">Start Bronze</button>
+        </article>
+      </section>
+
+      <section class="screen question-screen hidden" id="questionScreen" aria-live="polite">
+        <button class="text-button" id="backToHomeFromQuestions">Back to topics</button>
+        <article class="question-card" id="questionCard">
+          <div class="question-topline">
+            <span class="level-badge" id="levelBadge">Bronze</span>
+            <span class="progress-label" id="progressLabel">Question 1 of 3</span>
+          </div>
+
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <h1 id="questionText">45 + 23</h1>
+          <label class="answer-label" for="answerInput">Your answer</label>
+          <input id="answerInput" class="answer-input" type="text" inputmode="decimal" autocomplete="off" />
+          <button class="primary-button" id="checkAnswerButton">Check</button>
+          <div class="feedback-box" id="feedbackBox"></div>
+        </article>
+      </section>
+
+      <section class="screen celebration-screen hidden" id="celebrationScreen" aria-live="polite">
+        <article class="celebration-card">
+          <div class="trophy" aria-hidden="true">🏆</div>
+          <div class="stars" aria-hidden="true">★ ★ ★</div>
+          <h1>Gold completed!</h1>
+          <p id="celebrationMessage">Brilliant work, Lauren. You kept going and levelled up.</p>
+          <button class="primary-button" id="finishTopicButton">Back to topics</button>
+        </article>
+      </section>
+      <footer class="motto-bar">Work hard, stay positive and always <strong>Level Up!</strong></footer>
+    </main>
+
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
